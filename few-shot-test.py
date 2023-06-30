@@ -100,28 +100,25 @@ few_shot_prompt = FewShotPromptTemplate(
 )
 
 db = SQLDatabase.from_uri("sqlite:///D:/huajun/softwares/litestream-0.3.9/data_0629.db")
-local_llm = OpenAI(temperature=0, openai_api_key='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')
-# local_llm = GLM()
-# local_llm.load_model(model_name_or_path='D:\\huajun\\chatGLM\\chatGLM\\chatglm-6B')
-local_chain = SQLDatabaseChain.from_llm(local_llm, db, prompt=few_shot_prompt, use_query_checker=True, verbose=True, return_intermediate_steps=True)
+# local_llm = OpenAI(temperature=0, openai_api_key='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')
+local_llm = GLM()
+local_llm.load_model(model_name_or_path='D:\\huajun\\chatGLM\\chatGLM\\chatglm2-6b')
+# local_chain = SQLDatabaseChain.from_llm(local_llm, db, prompt=few_shot_prompt, use_query_checker=True, verbose=True, return_intermediate_steps=True)
+# Test without checker for local llm
+local_chain = SQLDatabaseChain.from_llm(local_llm, db, prompt=few_shot_prompt, verbose=True, return_intermediate_steps=True)
 
-# result = local_chain("今天是2023-06-28，昨天总台互动量最高的微博账号是?") # success
+# result = local_chain("今天是2023-06-28，昨天总台互动量最高的微博账号是?") # success, for local llm
 # result = local_chain("昨天总台互动量最高的微博账号是?") # not success, the_date = DATE('now', '-1 day')
-# result = local_chain("今天是2023-06-28，昨天总台互动量最高的微信账号是?") # not sucess, name IS NOT NULL 
+# result = local_chain("今天是2023-06-28，昨天总台互动量最高的微信账号是?") # not sucess, name IS NOT NULL; glm2 asks on table _litestream_seq
 # result = local_chain("2023-06-28这一天互动量最高的微博账号是?") # success
 # result = local_chain("2023-06-27这一天互动量最高的微博账号是?") # success
-# result = local_chain("2023-06-27这一天互动量最高的微信账号是?") # not sucess, name IS NOT NULL 
+# result = local_chain("2023-06-27这一天互动量最高的微信账号是?") # not sucess, name IS NOT NULL; glm2 SQLResult: 2023-06-27|央视财经|4112, 但是返回报错
 # result = local_chain("2023-06-28这一天互动量最高的微信账号是?") # success
 # result = local_chain("2023-06-28这一天总台互动量最低的微博账号是？")
 # print(result)
-app = Flask(__name__)
 
-# @app.route('/query', methods=['POST'])
-# def process_query():
-#     data = request.get_json()
-#     query = data['query']
-#     result = local_chain(query)
-#     return jsonify({'result': str(result)})
+# Temp Comment: Server version
+app = Flask(__name__)
 
 @app.route('/query', methods=['POST'])
 def process_query():
