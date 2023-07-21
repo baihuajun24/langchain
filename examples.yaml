@@ -1,0 +1,214 @@
+- input: 今天是2023-06-28，昨天互动量最高的微博账号是?
+  table_info: |
+    CREATE TABLE social_reaction (
+        the_date Date NOT NULL,
+        type TEXT NOT NULL,
+        name TEXT NOT NULL,
+        content TEXT NOT NULL,
+        url TEXT NOT NULL,
+        reaction INTEGER NOT NULL,
+        language TEXT,
+        programe TEXT,
+        plate_name TEXT
+    )
+  sql_cmd: 
+    SELECT the_date, name, sum(reaction) as total_react
+    FROM social_reaction
+    WHERE type = '微博' and name is not 'n/a' and the_date = '2023-06-27'
+    group by the_date, name
+    ORDER BY total_react DESC
+    LIMIT 1;
+  sql_result: "2023-06-27|央视新闻|3098"
+  answer: 昨天2023年6月27日，互动量最高的微博账号是央视新闻, 它的互动量是3098。
+- input: 2023-06-27这一天互动量最高的微信账号是?
+  table_info: |
+    CREATE TABLE social_reaction (
+        the_date Date NOT NULL,
+        type TEXT NOT NULL,
+        name TEXT NOT NULL,
+        content TEXT NOT NULL,
+        url TEXT NOT NULL,
+        reaction INTEGER NOT NULL,
+        language TEXT,
+        programe TEXT,
+        plate_name TEXT
+    )
+  sql_cmd: 
+    SELECT the_date, name, sum(reaction) as total_react
+    FROM social_reaction
+    WHERE type = '微信' and name is not 'n/a' and the_date = '2023-06-27'
+    group by the_date, name
+    ORDER BY total_react DESC
+    LIMIT 1;
+  sql_result: "2023-06-27|央视一套|9690"
+  answer: 2023年6月27日，互动量最高的微信账号是央视一套, 它的互动量是9690。
+- input: 2023-06-27这一天总台互动量最低的微博账号是?
+  table_info: |
+    CREATE TABLE social_reaction (
+        the_date Date NOT NULL,
+        type TEXT NOT NULL,
+        name TEXT NOT NULL,
+        content TEXT NOT NULL,
+        url TEXT NOT NULL,
+        reaction INTEGER NOT NULL,
+        language TEXT,
+        programe TEXT,
+        plate_name TEXT
+    )
+  sql_cmd: 
+    SELECT the_date, name, sum(reaction) as total_react
+    FROM social_reaction
+    WHERE type = '微博' 
+      and name is not 'n/a' 
+      and the_date = '2023-06-27'
+    group by the_date, name
+    HAVING total_react = 0;
+  sql_result: "2023-06-27|1012交通广播|0
+2023-06-27|CCTV-17地球村日记|0
+2023-06-27|CCTV农业气象|0"
+  answer: 2023年6月27日，互动量最低的微博账号包括1012交通广播、CCTV-17地球村日记、CCTV农业气象，互动量都为0。
+- input: 2023-06-27这一天互动量最高的微信账号是?
+  table_info: |
+    CREATE TABLE social_reaction (
+        the_date Date NOT NULL,
+        type TEXT NOT NULL,
+        name TEXT NOT NULL,
+        content TEXT NOT NULL,
+        url TEXT NOT NULL,
+        reaction INTEGER NOT NULL,
+        language TEXT,
+        programe TEXT,
+        plate_name TEXT
+    )
+  sql_cmd: 
+    SELECT the_date, name, sum(reaction) as total_react
+    FROM social_reaction
+    WHERE type = '微信' and name is not 'n/a' and the_date = '2023-06-27'
+    group by the_date, name
+    ORDER BY total_react DESC
+    LIMIT 1;
+  sql_result: "2023-06-27|央视一套|9690"
+  answer: 2023年6月27日，互动量最高的微信账号是央视一套, 它的互动量是9690。
+- input: 今天是2023年7月5日，本周总台互动量最高的微博账号是？
+  table_info: |
+    CREATE TABLE social_reaction (
+        the_date Date NOT NULL,
+        type TEXT NOT NULL,
+        name TEXT NOT NULL,
+        content TEXT NOT NULL,
+        url TEXT NOT NULL,
+        reaction INTEGER NOT NULL,
+        language TEXT,
+        programe TEXT,
+        plate_name TEXT
+    )
+  sql_cmd: 
+    SELECT name, sum(reaction) as total_reaction
+    FROM social_reaction
+    WHERE type = '微博' 
+      and name is not 'n/a' 
+      and the_date >= date('2023-07-05', '-7 days')
+    GROUP BY name
+    ORDER BY total_reaction DESC
+    LIMIT 1;
+  sql_result: "央视新闻|33448"
+  answer: 2023年7月5日以前的一周，互动量最高的微博账号是央视新闻，互动量为33448。
+- input: 今天是2023年7月5日，昨天发稿语言为外语的互动量最高的微博账号是？
+  table_info: |
+    CREATE TABLE social_reaction (
+        the_date Date NOT NULL,
+        type TEXT NOT NULL,
+        name TEXT NOT NULL,
+        content TEXT NOT NULL,
+        url TEXT NOT NULL,
+        reaction INTEGER NOT NULL,
+        language TEXT,
+        programe TEXT,
+        plate_name TEXT
+    )
+  sql_cmd: 
+    SELECT name, the_date, sum(reaction) as total_reaction
+    FROM social_reaction
+    WHERE type = '微博' 
+      and name is not 'n/a' 
+      and language is not 'n/a' and language is not '中文'
+      and the_date = date('2023-07-05', '-1 days')
+    GROUP BY name, the_date
+    ORDER BY total_reaction DESC
+    LIMIT 1;
+  sql_result: "CRI日语频道|2023-07-04|6"
+  answer: 2023年7月4日，发稿语言为外语的互动量最高的微博账号是CRI日语频道，语言为日语，互动量为6。
+- input: 今天是2023年7月5日，昨天新闻中心互动量最高的微博账号是？
+  table_info: |
+    CREATE TABLE social_reaction (
+        the_date Date NOT NULL,
+        type TEXT NOT NULL,
+        name TEXT NOT NULL,
+        content TEXT NOT NULL,
+        url TEXT NOT NULL,
+        reaction INTEGER NOT NULL,
+        language TEXT,
+        programe TEXT,
+        plate_name TEXT
+    )
+  sql_cmd: 
+    SELECT name, the_date, sum(reaction) as total_reaction
+    FROM social_reaction
+    WHERE type = '微博' 
+      and name is not 'n/a' 
+      and programe = '新闻中心'
+      and the_date = date('2023-07-05', '-1 days')
+    GROUP BY name, the_date
+    ORDER BY total_reaction DESC
+    LIMIT 1;
+  sql_result: "CCTV国际时讯|2023-07-04|235"
+  answer: 2023年7月4日，新闻中心互动量最高的微博账号是CCTV国际时讯，互动量为235。
+- input: 今天是2023年7月5日，昨天国际传播板块互动量最高的微博账号是？
+  table_info: |
+    CREATE TABLE social_reaction (
+        the_date Date NOT NULL,
+        type TEXT NOT NULL,
+        name TEXT NOT NULL,
+        content TEXT NOT NULL,
+        url TEXT NOT NULL,
+        reaction INTEGER NOT NULL,
+        language TEXT,
+        programe TEXT,
+        plate_name TEXT
+    )
+  sql_cmd: 
+    SELECT name, the_date, sum(reaction) as total_reaction
+    FROM social_reaction
+    WHERE type = '微博' 
+      and name is not 'n/a' 
+      and plate_name = '国际传播板块'
+      and the_date = date('2023-07-05', '-1 days')
+    GROUP BY name, the_date
+    ORDER BY total_reaction DESC
+    LIMIT 1;
+  sql_result: "记者韩鹏|2023-07-04|693"
+  answer: 2023年7月4日，国际传播板块互动量最高的微博账号是CCTV记者韩鹏，互动量为693。
+- input: 今天是2023年7月5日，昨天互动量最高的快手账号是？
+  table_info: |
+    CREATE TABLE social_reaction (
+        the_date Date NOT NULL,
+        type TEXT NOT NULL,
+        name TEXT NOT NULL,
+        content TEXT NOT NULL,
+        url TEXT NOT NULL,
+        reaction INTEGER NOT NULL,
+        language TEXT,
+        programe TEXT,
+        plate_name TEXT
+    )
+  sql_cmd: 
+    SELECT name, the_date, sum(reaction) as total_reaction
+    FROM social_reaction
+    WHERE type = '快手' 
+      and name is not 'n/a' 
+      and the_date = date('2023-07-05', '-1 days')
+    GROUP BY name, the_date
+    ORDER BY total_reaction DESC
+    LIMIT 1;
+  sql_result: "央视网|2023-07-04|64926"
+  answer: 2023年7月4日，快手平台互动量最高的微博账号是央视网，互动量为64926。
