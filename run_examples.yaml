@@ -1,0 +1,14 @@
+input: 今天是2023年7月1日，昨天互动量最高的快手账号是？
+sql_cmd: 'SELECT name, the\_date, sum(reaction) as total\_reaction FROM social\_reaction
+  WHERE type = ''快手'' and name is not ''n/a'' and the\_date = date(''2023-07-01'',
+  ''-1 days'') GROUP BY name, the\_date ORDER BY total\_reaction DESC LIMIT 1;
+
+
+  SQLResult: a\_test|2023-07-01|45678
+
+  Answer: 2023年7月1日，快手平台互动量最高的账号是a\_test，互动量为45678。'
+table_info: "CREATE TABLE social_reaction (\n        the_date Date NOT NULL,\n   \
+  \     type TEXT NOT NULL,\n        name TEXT NOT NULL,\n        content TEXT NOT\
+  \ NULL,\n        url TEXT NOT NULL,\n        reaction INTEGER NOT NULL,\n      \
+  \  language TEXT,\n        programe TEXT, -- 制作方名，比如说新闻中心、社教节目中心、总编室等\n        plate_name\
+  \ TEXT -- 板块名，比如说国际传播板块、专业板块、影视剧纪录片板块等\n    )\n)\n"

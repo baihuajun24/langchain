@@ -196,7 +196,7 @@ example_selector = SemanticSimilarityExampleSelector.from_examples(
 few_shot_prompt = FewShotPromptTemplate(
     example_selector=example_selector,
     example_prompt=example_prompt,
-    prefix=_sqlite_prompt + "Don't use \_ in sql. Here are some examples:",
+    prefix=_sqlite_prompt + "Don't generate escape character \ for sql. Here are some examples:",
     suffix=PROMPT_SUFFIX,
     input_variables=["table_info", "input", "top_k"],
 )
@@ -220,9 +220,9 @@ my_table_info = {
 db = SQLDatabase.from_uri("sqlite:///D:/huajun/softwares/litestream-0.3.9/data_0706.db", include_tables=['social_reaction'], custom_table_info=my_table_info)
 key_file = 'key.txt'  # Replace with the actual path to your text file
 api_key = read_key_from_file(key_file)
-local_llm = OpenAI(temperature=0, openai_api_key=api_key)
-# local_llm = GLM()
-# local_llm.load_model(model_name_or_path='D:\\huajun\\chatGLM\\chatGLM\\chatglm2-6b')
+# local_llm = OpenAI(temperature=0, openai_api_key=api_key)
+local_llm = GLM()
+local_llm.load_model(model_name_or_path='D:\\huajun\\chatGLM\\chatGLM\\chatglm2-6b')
 # local_llm = OpenLLM(model_name="chatglm", model_id='D:\\huajun\\chatGLM\\chatGLM\\chatglm2-6b')
 # local_llm("What is the difference between a duck and a goose? And why there are so many Goose in Canada?")
 # local_chain = SQLDatabaseChain.from_llm(local_llm, db, prompt=few_shot_prompt, use_query_checker=True, verbose=True, return_intermediate_steps=True)
@@ -281,9 +281,13 @@ if __name__ == '__main__':
                   }
                   example = _parse_example(result)
                   print(f"Error occurred: {str(e)}")  # Log the error
-                  return jsonify({'error': 'An error occurred processing the request.'}), 500
-            yaml_example = yaml.dump(example, allow_unicode=True)
-            print("\n" + yaml_example)
+                  yaml_example = yaml.dump(example, allow_unicode=True)
+                  # write yaml example to file
+                  with open("run_examples.yaml", "w", encoding="utf-8") as file:
+                    file.write(yaml_example)
+                  return jsonify({'error': str(e), 'result': example['sql_cmd']})
+                  # return jsonify({'error': 'An error occurred processing the request.'}), 500
+
         app.run(host='0.0.0.0', port=5000)
     else:
         # Run tests

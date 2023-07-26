@@ -20,9 +20,12 @@ while True:
     # If the request was successful, decode the JSON response
     if response.status_code == 200:
         result = response.json()
-        result_dict = ast.literal_eval(result['result'])
-        final_result = result_dict['result']
+        final_result = result['result']
         print("Result: ", final_result)
+        
+        # result_dict = ast.literal_eval(result['result'])
+        # final_result = result_dict['result']
+        # print("Result: ", final_result)
         # print("Result: ", result["result"])
     else:
         print(f"Request failed with status code {response.status_code}")
